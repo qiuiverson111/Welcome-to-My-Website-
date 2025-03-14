@@ -1,8 +1,7 @@
 body {
     font-family: 'Arial', sans-serif;
-}
-body {
-    background-color: #f4f4f4;
+
+    background-color: #e6dae1;
     color: #333;
 }
 a {
@@ -15,3 +14,11 @@ header {
 nav {
     margin-bottom: 20px;
 }
+
+h2 {
+    color: aquamarine;
+}
+p {
+    color: green;
+}
+
