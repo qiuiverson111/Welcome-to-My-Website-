@@ -1,0 +1,17 @@
+body {
+    font-family: 'Arial', sans-serif;
+}
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+a {
+    color: #0077cc;
+}
+header {
+    padding: 20px;
+    text-align: center;
+}
+nav {
+    margin-bottom: 20px;
+}
