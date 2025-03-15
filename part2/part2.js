@@ -10,14 +10,14 @@ socialMedia.then(function(data) {
 
     // Define the dimensions and margins for the SVG
     let
-      width = 600,
+      width = 400,
       height = 400;
   
     let margin = {
-      top: 40,
-      bottom: 30,
-      left: 40,
-      right: 30
+      top: 20,
+      bottom: 20,
+      left: 20,
+      right: 20
     };
 
     // Create the SVG container
@@ -25,7 +25,7 @@ socialMedia.then(function(data) {
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height)
-                .style('background', '#e9f7f2');
+                .style('background', 'white');
 
     // Set up scales for x and y axes
     // You can use the range 0 to 1000 for the number of Likes, or if you want, you can use
@@ -34,18 +34,18 @@ socialMedia.then(function(data) {
     // For the domain of the xscale, you can list all four platforms or use
     // [...new Set(data.map(d => d.Platform))] to achieve a unique list of the platform
 
-    // defining xscale
+    // xscale
     let xScale = d3.scaleBand()
       .domain([...new Set(data.map(d => d.Platform))])  // Unique platforms
       .range([margin.left, width - margin.right])  // Horizontal space
       .padding(0.5);  // Padding between bars
     
-    // defining yscale 
+    // yscale 
     let yScale = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.Likes)]) // Setting domain from 0 to max likes 
       .range([height - margin.bottom, margin.top]);
     
-    // drawing axis and adding x-axis label
+    // inpus axis and inputting x-axis label
     let xAxis = svg
       .append('g')
         .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -54,11 +54,11 @@ socialMedia.then(function(data) {
     xAxis
       .append('text')
         .attr('x', width - margin.left)
-        .attr('y', -10)
-        .style('stroke', 'black')
-        .text('Platforms');
+        .attr('y', -20)
+        .style('stroke', 'Blue')
+        .text('Platform');
 
-    // drawing axis and adding y-axis label
+    // inpus axis and inputting y-axis label
     let yAxis = svg
       .append('g')
         .attr('transform', `translate(${margin.left},0)`)
@@ -68,59 +68,41 @@ socialMedia.then(function(data) {
       .append('text')
         .attr('y', 30)
         .attr('x', 20)
-        .style('stroke', 'black')
+        .style('stroke', 'Green')
         .text('Likes');
 
-
-    
     const rollupFunction = function(groupData) {
         const values = groupData.map(d => d.Likes).sort(d3.ascending);
         const min = d3.min(values); 
-        const q1 = d3.quantile(values, 0.25); // 1st quartile 
-        const median = d3.quantile(values, 0.5); // 2nd quartile (median)
-        const q3 = d3.quantile(values, 0.75);  // 3rd quartile
-        const max = d3.max(values); // max value 
-        const iqr = q3 - q1; // interquartile range 
+        const q1 = d3.quantile(values, 0.25); 
+        const median = d3.quantile(values, 0.5); 
+        const q3 = d3.quantile(values, 0.75);  
+        const iqr = q3 - q1; 
+        const max = d3.max(values); 
+        
         return { min, q1, median, q3, max, iqr };
     };
 
-    // grouping data by platform and calculating min, q1, median, q3, and iqr for each platform 
     const quantilesByGroups = d3.rollup(data, rollupFunction, d => d.Platform);
 
-    // going through each platform and drawing box plot 
     quantilesByGroups.forEach((quantiles, Platform) => {
-        const x = xScale(Platform); // getting x position for platform 
-        const boxWidth = xScale.bandwidth(); // getting box width for each platform 
+        const x = xScale(Platform); 
+        const boxWidth = xScale.bandwidth(); 
 
-        // Draw vertical lines
-        svg.append('line')
-          .attr('x1', x + boxWidth / 2)
-          .attr('y1', yScale(quantiles.min))
-          .attr('x2', x + boxWidth / 2)
-          .attr('y2', yScale(quantiles.max))
-          .attr('stroke', 'black')
-          .attr('stroke-width', 2);
+        // Draw the vertical whisker line (from min to max)
+svg.append('line')
+.attr('x1', x + boxWidth / 2)  // Center of the box
+.attr('y1', yScale(quantiles.min))  // Start at minimum value
+.attr('x2', x + boxWidth / 2)  // Center of the box
+.attr('y2', yScale(quantiles.max))  // End at maximum value
+.attr('stroke', 'black')  // Line color
+.attr('stroke-width', 2);  // Line thickness
 
-        // Draw box
-        svg.append('rect')
-          .attr('x', x)
-          .attr('y', yScale(quantiles.q3))
-          .attr('width', boxWidth)
-          .attr('height', yScale(quantiles.q1) - yScale(quantiles.q3))
-          .attr('fill', 'steelblue'); 
-
-        // Draw median line
-        svg.append('line')
-          .attr('x1', x)
-          .attr('y1', yScale(quantiles.median))
-          .attr('x2', x + boxWidth)
-          .attr('y2', yScale(quantiles.median))
-          .attr('stroke', 'black')
-          .attr('stroke-width', 2);
-
-    });
-});
-
+// Draw the box (interquartile range)
+svg.append('rect')
+.attr('x', x)  // X position of the box
+.attr('y', yScale(quantiles.q3))  // Y position for Q3
+.attr('width', boxWidth)  // Width of the
 
 
 // Prepare you data and load the data again. 
@@ -135,13 +117,13 @@ socialMediaAvg.then(function(data) {
 
     // Define the dimensions and margins for the SVG
     let
-      width = 900,
+      width = 400,
       height = 400;
   
     let margin = {
-      top: 50,
-      bottom: 50,
-      left: 50,
+      top: 30,
+      bottom: 30,
+      left: 30,
       right: 10,
     };
 
@@ -150,7 +132,7 @@ socialMediaAvg.then(function(data) {
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height)
-                .style('background', '#e9f7f2');
+                .style('background', 'white');
 
     // Define four scales
     // Scale x0 is for the platform, which divide the whole scale into 4 parts
@@ -159,17 +141,17 @@ socialMediaAvg.then(function(data) {
     // Also need a color scale for the post type
 
     const x0 = d3.scaleBand()
-      .domain(data.map(d => d.Platform)) // Unique Platform 
+      .domain(data.map(d => d.Platform)) 
       .range([0, width])
       .padding(0.5);
 
     const x1 = d3.scaleBand()
-      .domain([...new Set(data.map(d => d.PostType))])  // Unique Post Type 
-      .range([0, x0.bandwidth()])  // Within each platform
-      .padding(0.2);  // Padding between post types
+      .domain([...new Set(data.map(d => d.PostType))])  
+      .range([0, x0.bandwidth()])  
+      .padding(0.2);  
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.AvgLikes)]) // Setting domain from 0 to max likes 
+      .domain([0, d3.max(data, d => d.AvgLikes)]) 
       .range([height - margin.bottom, margin.top]);
 
     const color = d3.scaleOrdinal()
@@ -179,9 +161,9 @@ socialMediaAvg.then(function(data) {
     // Add scales x0 and y     
     
     let xScale = d3.scaleBand()
-      .domain([...new Set(data.map(d => d.Platform))])  // Unique platforms
-      .range([margin.left, width - margin.right])  // Horizontal space
-      .padding(0.1);  // Padding between bars
+      .domain([...new Set(data.map(d => d.Platform))]) 
+      .range([margin.left, width - margin.right])  
+      .padding(0.1);  =
     
     let yScale = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.AvgLikes)])
@@ -199,7 +181,7 @@ socialMediaAvg.then(function(data) {
         .attr('x', width / 2)
         .attr('y', 35)
         .style('stroke', 'black')
-        .text('Platforms');
+        .text('Platform');
 
     // Add y-axis label
 
@@ -210,10 +192,10 @@ socialMediaAvg.then(function(data) {
 
     yAxis
       .append('text')
-        .attr('y', 30)
-        .attr('x', 50)
+        .attr('y', 20)
+        .attr('x', 40)
         .style('stroke', 'black')
-        .text('Average Likes');
+        .text('Average Like');
 
   // Group container for bars
     const barGroups = svg.selectAll("bar")
@@ -224,11 +206,11 @@ socialMediaAvg.then(function(data) {
 
   // Draw bars
     barGroups.append("rect")
-      .attr("x", d => x1(d.PostType))  // positioning bar on post type 
-      .attr("y", d => y(d.AvgLikes))  // basing on average likes 
-      .attr("width", x1.bandwidth())  // bandwidth set to width 
-      .attr("height", d => height - margin.bottom - y(d.AvgLikes))  // height based on avg like
-      .attr("fill", d => color(d.PostType)); // color based on post type 
+      .attr("x", d => x1(d.PostType)) 
+      .attr("y", d => y(d.AvgLikes))  
+      .attr("width", x1.bandwidth())  
+      .attr("height", d => height - margin.bottom - y(d.AvgLikes))  
+      .attr("fill", d => color(d.PostType));  
       
 
     // Add the legend
@@ -250,8 +232,8 @@ socialMediaAvg.then(function(data) {
       legend.append("rect")
         .attr("x", 0)
         .attr("y", i * 20 + 5)
-        .attr("width", 10)
-        .attr("height", 10)
+        .attr("width", 20)
+        .attr("height", 20)
         .attr("fill", color(type));
   });
 
@@ -270,14 +252,14 @@ socialMediaTime.then(function(data) {
 
     // Define the dimensions and margins for the SVG
     let
-      width = 700,
-      height = 400;
+      width = 500,
+      height = 300;
   
     let margin = {
-      top: 50,
+      top: 20,
       bottom: 90,
-      left: 50,
-      right: 30
+      left: 30,
+      right: 10
     };
 
     // Create the SVG container
@@ -285,7 +267,7 @@ socialMediaTime.then(function(data) {
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height)
-                .style('background', '#e9f7f2');
+                .style('background', 'white');
 
     // Set up scales for x and y axes  
     let xScale = d3.scaleBand()
@@ -302,8 +284,8 @@ socialMediaTime.then(function(data) {
       .append('g')
         .attr('transform', `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom().scale(xScale))
-        .selectAll("text") // selecting all texts 
-          // rotating texts 
+        .selectAll("text") // select all texts 
+          // rotate texts 
           .style("text-anchor", "end")  
           .attr("transform", "rotate(-25)"); 
 
@@ -324,8 +306,8 @@ socialMediaTime.then(function(data) {
     // Add y-axis label
     yAxis
       .append('text')
-        .attr('y', 30)
-        .attr('x', 20)
+        .attr('y', 10)
+        .attr('x', 0)
         .style('stroke', 'black')
         .text('Average Likes');
 
